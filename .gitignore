@@ -1,7 +1,8 @@
 venv/
 .DS_Store
 # ignore vendor static files
-src\staticfiles\vendors
+/src/staticfiles/vendors/
+
 # ignore local static files root
 # localcdn
 local-cdn/
