@@ -1,4 +1,10 @@
 venv/
+.DS_Store
+# ignore vendor static files
+src\staticfiles\vendors
+# ignore local static files root
+# localcdn
+local-cdn/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
