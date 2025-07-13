@@ -7,18 +7,19 @@ on:
     - cron: '0 4 1 * *'          # monthly cleanup on the 1st at 4 AM UTC
 
 jobs:
-  sync:
+  build:
     runs-on: ubuntu-latest
-    env:
-      DJANGO_DEBUG: ${{secrets.DJANGO_DEBUG}}
+
+    env:  # define environment variables here
+      DJANGO_DEBUG: ${{ secrets.DJANGO_DEBUG }}
       STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
-      DATABASE_URL: ${{ secrets.RDS_DATABASE_URL }}
+      DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
         with:
           python-version: '3.12'
 
