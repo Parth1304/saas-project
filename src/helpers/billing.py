@@ -3,13 +3,13 @@ from decouple import config
 
 from . import date_utils
 
-DJANGO_DEBUG=config("DJANGO_DEBUG", default=True, cast=bool)
+DJANGO_DEBUG=config("DJANGO_DEBUG", default=False, cast=bool)
 STRIPE_SECRET_KEY=config("STRIPE_SECRET_KEY", default="", cast=str)
 
 
 if "sk_test" in STRIPE_SECRET_KEY and not DJANGO_DEBUG:
     raise ValueError("Invalid stripe key for prod")
-
+print("DEBUG:", DJANGO_DEBUG, "STRIPE KEY:", STRIPE_SECRET_KEY[:10])
 
 stripe.api_key = STRIPE_SECRET_KEY
 
