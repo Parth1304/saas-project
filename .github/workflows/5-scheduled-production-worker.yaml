@@ -1,67 +1,16 @@
-# name: Scheduled Stripe Subscription Sync
-
-# on:
-#   workflow_dispatch:
-#   schedule:
-#     - cron: '0 1,12 * * *'       # every day at 1 AM and 12 PM UTC
-#     - cron: '0 4 1 * *'          # monthly cleanup on the 1st at 4 AM UTC
-
-# jobs:
-#   sync:
-#     runs-on: ubuntu-latest
-#     env:
-#       DJANGO_DEBUG: 1
-#       STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
-#       DATABASE_URL: ${{ secrets.RDS_DATABASE_URL }}
-#     steps:
-#       - name: Checkout code
-#         uses: actions/checkout@v4
-
-#       - name: Setup Python
-#         uses: actions/setup-python@v5
-#         with:
-#           python-version: '3.12'
-
-#       - name: Install dependencies
-#         run: |
-#           python -m pip install --upgrade pip
-#           pip install -r requirements.txt
-
-#       - name: Setup Django secret key
-#         run: |
-#           echo "DJANGO_SECRET_KEY=$(openssl rand -base64 32)" >> $GITHUB_ENV
-
-#       - name: Migrate database
-#         working-directory: ./src
-#         run: |
-#           python manage.py migrate
-
-#       - name: Sync active Stripe subscriptions (daily)
-#         if: github.event.schedule != '0 4 1 * *'
-#         working-directory: ./src
-#         run: |
-#           python manage.py sync_user_subs --day-start 0 --day-end 1
-
-#       - name: Clear dangling Stripe subscriptions (monthly)
-#         if: github.event.schedule == '0 4 1 * *'
-#         working-directory: ./src
-#         run: |
-#           python manage.py sync_user_subs --clear-dangling
-
-
 name: Scheduled Stripe Subscription Sync
 
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 1,12 * * *'
-    - cron: '0 4 1 * *'
+    - cron: '0 1,12 * * *'       # every day at 1 AM and 12 PM UTC
+    - cron: '0 4 1 * *'          # monthly cleanup on the 1st at 4 AM UTC
 
 jobs:
   sync:
     runs-on: ubuntu-latest
     env:
-      DJANGO_DEBUG: 1  # Make sure this is set to 1, not a secret
+      DJANGO_DEBUG: ${{ secrets.DJANGO_DEBUG }}
       STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
       DATABASE_URL: ${{ secrets.RDS_DATABASE_URL }}
     steps:
@@ -81,18 +30,6 @@ jobs:
       - name: Setup Django secret key
         run: |
           echo "DJANGO_SECRET_KEY=$(openssl rand -base64 32)" >> $GITHUB_ENV
-
-      - name: Debug environment variables
-        working-directory: ./src
-        run: |
-          echo "=== Environment Variables ==="
-          echo "DJANGO_DEBUG: $DJANGO_DEBUG"
-          echo "STRIPE_SECRET_KEY length: ${#STRIPE_SECRET_KEY}"
-          echo "STRIPE_SECRET_KEY starts with: ${STRIPE_SECRET_KEY:0:7}"
-          echo "=== Python Config Values ==="
-          python -c "from decouple import config; print('DJANGO_DEBUG from config:', config('DJANGO_DEBUG', default=False, cast=bool))"
-          python -c "from decouple import config; print('STRIPE_SECRET_KEY from config starts with:', config('STRIPE_SECRET_KEY', default='')[:7])"
-          python -c "from decouple import config; sk=config('STRIPE_SECRET_KEY', default=''); debug=config('DJANGO_DEBUG', default=False, cast=bool); print('Validation check:', 'sk_test' in sk and not debug)"
 
       - name: Migrate database
         working-directory: ./src

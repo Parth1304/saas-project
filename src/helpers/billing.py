@@ -5,7 +5,7 @@ from . import date_utils
 
 DJANGO_DEBUG=config("DJANGO_DEBUG", default=False, cast=bool)
 STRIPE_SECRET_KEY=config("STRIPE_SECRET_KEY", default="", cast=str)
-
+STRIPE_TEST_OVERRIDE = config("STRIPE_TEST_OVERRIDE", default=False, cast=bool)
 if "sk_test" in STRIPE_SECRET_KEY and not DJANGO_DEBUG:
     raise ValueError("Invalid stripe key for prod")
 
