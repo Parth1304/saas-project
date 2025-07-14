@@ -3,7 +3,7 @@ from decouple import config
 
 from . import date_utils
 
-DJANGO_DEBUG=config("DJANGO_DEBUG", default=False, cast=bool)
+DJANGO_DEBUG=config("DJANGO_DEBUG", default=True, cast=bool)
 STRIPE_SECRET_KEY=config("STRIPE_SECRET_KEY", default="", cast=str)
 
 
