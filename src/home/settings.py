@@ -208,15 +208,21 @@ STATICFILES_DIRS = [
 # output for python manage.py collectstatic 
 # local cdn
 STATIC_ROOT = BASE_DIR / "local-cdn"
+# Force fallback during local dev to avoid missing tailwind file error
 STORAGES = {
-    # ...
     "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
-    },
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage"
+    }
 }
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
+if DEBUG:
+    STORAGES["staticfiles"]["BACKEND"] = "django.contrib.staticfiles.storage.StaticFilesStorage"
+
+
+
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 

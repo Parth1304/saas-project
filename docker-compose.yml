@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    command: gunicorn home.wsgi:application --bind 0.0.0.0:8000 --workers 3
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    volumes:
+      - ./src:/app
+    depends_on:
+      - wait_for_db
+
+  wait_for_db:
+    image: busybox
+    command: /bin/sh -c "sleep 10"
