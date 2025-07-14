@@ -10,7 +10,7 @@ jobs:
   sync:
     runs-on: ubuntu-latest
     env:
-      DJANGO_DEBUG: 1
+      DJANGO_DEBUG: ${{ secrets.DJANGO_DEBUG}}
       STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
       DATABASE_URL: ${{ secrets.RDS_DATABASE_URL }}
     steps:
