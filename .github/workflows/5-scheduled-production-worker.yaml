@@ -10,7 +10,7 @@ jobs:
   sync:
     runs-on: ubuntu-latest
     env:
-      DJANGO_DEBUG: ${{ secrets.DJANGO_DEBUG }}
+      DJANGO_DEBUG: "1"
       STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
       DATABASE_URL: ${{ secrets.RDS_DATABASE_URL }}
     steps:
@@ -30,7 +30,7 @@ jobs:
       - name: Setup Django secret key
         run: |
           echo "DJANGO_SECRET_KEY=$(openssl rand -base64 32)" >> $GITHUB_ENV
-          
+
       - name: Debug environment variables
         run: |
           echo "DJANGO_DEBUG value: '$DJANGO_DEBUG'"
