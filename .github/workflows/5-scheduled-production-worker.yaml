@@ -35,6 +35,13 @@ jobs:
         working-directory: ./src
         run: |
           python manage.py migrate
+          
+      - name: Print env vars
+        run: |
+          echo "DJANGO_DEBUG=$DJANGO_DEBUG"
+          echo "STRIPE_SECRET_KEY=$STRIPE_SECRET_KEY"
+          echo "DATABASE_URL=$DATABASE_URL"
+
 
       - name: Sync active Stripe subscriptions (daily)
         if: github.event.schedule != '0 4 1 * *'
