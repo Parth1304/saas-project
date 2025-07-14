@@ -30,18 +30,18 @@ jobs:
       - name: Setup Django secret key
         run: |
           echo "DJANGO_SECRET_KEY=$(openssl rand -base64 32)" >> $GITHUB_ENV
+          
+      - name: Debug environment variables
+        run: |
+          echo "DJANGO_DEBUG value: '$DJANGO_DEBUG'"
+          echo "DJANGO_DEBUG type: $(python -c "import os; print(type(os.environ.get('DJANGO_DEBUG', 'NOT_SET')))")"
+          python -c "from decouple import config; print('Parsed DJANGO_DEBUG:', config('DJANGO_DEBUG', default=True, cast=bool))"
 
       - name: Migrate database
         working-directory: ./src
         run: |
           python manage.py migrate
           
-      - name: Print env vars
-        run: |
-          echo "DJANGO_DEBUG=$DJANGO_DEBUG"
-          echo "STRIPE_SECRET_KEY=$STRIPE_SECRET_KEY"
-          echo "DATABASE_URL=$DATABASE_URL"
-
 
       - name: Sync active Stripe subscriptions (daily)
         if: github.event.schedule != '0 4 1 * *'
